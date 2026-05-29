@@ -1,4 +1,5 @@
-import type { Skill, Hero } from "../../types/game";
+import type { Skill } from "../../types/game";
+import type { HealthComponent } from "../../types/ecs";
 
 export const updateSkillsCooldowns = (skills: Skill[], dt: number): Skill[] => {
   return skills.map((s) => {
@@ -10,16 +11,16 @@ export const updateSkillsCooldowns = (skills: Skill[], dt: number): Skill[] => {
   });
 };
 
-export const updateHeroRegen = (hero: Hero, dt: number, timerRef: { regen: number }): { currentHp: number, hpHealed: number } => {
-  let currentHeroHp = hero.currentHp;
+export const updateHeroRegen = (health: HealthComponent, dt: number, timerRef: { regen: number }): { currentHp: number, hpHealed: number } => {
+  let currentHeroHp = health.currentHp;
   let hpHealed = 0;
   
   timerRef.regen += dt;
   if (timerRef.regen >= 1.0) {
     timerRef.regen -= 1.0;
-    if (currentHeroHp < hero.maxHp) {
-      const heal = hero.regen;
-      currentHeroHp = Math.min(hero.maxHp, currentHeroHp + heal);
+    if (currentHeroHp < health.maxHp) {
+      const heal = health.regen;
+      currentHeroHp = Math.min(health.maxHp, currentHeroHp + heal);
       hpHealed = heal;
     }
   }

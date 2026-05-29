@@ -4,7 +4,7 @@ import { useGameStore } from '../store/useGameStore';
 export const Tabs: React.FC = () => {
   const activeTab = useGameStore(state => state.activeTab);
   const setActiveTab = useGameStore(state => state.setActiveTab);
-  const heroLevel = useGameStore(state => state.hero.level);
+  const heroLevel = useGameStore(state => state.hero.progression.level);
 
   const tabs = [
     { id: 'upgrades', label: '⚔️ Улучшения', levelRequired: 1 },

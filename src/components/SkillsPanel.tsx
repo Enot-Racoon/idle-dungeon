@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/useGameStore';
+import type { Skill } from '../types/ecs';
 
 const SKILL_ICONS: Record<string, string> = {
   skl_slash: '🌪️',
@@ -9,7 +10,7 @@ const SKILL_ICONS: Record<string, string> = {
 };
 
 export const SkillsPanel: React.FC = () => {
-  const skills = useGameStore(state => state.skills);
+  const skills = useGameStore(state => state.hero.skills.skills);
   const hero = useGameStore(state => state.hero);
   const castSkill = useGameStore(state => state.castSkill);
 
@@ -19,9 +20,9 @@ export const SkillsPanel: React.FC = () => {
         🔮 Активные Заклинания
       </h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px' }} id="skills-grid">
-        {skills.map(skill => {
+        {skills.map((skill: Skill) => {
           const icon = SKILL_ICONS[skill.id] || '✨';
-          const isLocked = hero.level < skill.unlockedAt;
+          const isLocked = hero.progression.level < skill.unlockedAt;
           const isReady = skill.currentCooldown === 0;
           const isActive = skill.activeDuration > 0;
           

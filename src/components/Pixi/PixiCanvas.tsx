@@ -123,7 +123,7 @@ export const PixiCanvas: React.FC = () => {
       const heroState = useGameStore.getState().hero;
       [scene.heroShield, scene.heroSword].forEach((mesh, idx) => {
         const isShield = idx === 0;
-        const lvl = isShield ? heroState.armorLvl : heroState.weaponLvl;
+        const lvl = isShield ? heroState.equipment.armorLvl : heroState.equipment.weaponLvl;
         const mat = mesh.material as StandardMaterial;
         if (lvl >= 10) {
           mat.baseColor = Color.fromHex(isShield ? "#a855f7" : "#ef4444");
@@ -171,7 +171,7 @@ export const PixiCanvas: React.FC = () => {
           </span>
         ))}
       </div>
-      {hero.currentHp < hero.maxHp * 0.25 && <div className="danger-overlay" />}
+      {hero.health.currentHp < hero.health.maxHp * 0.25 && <div className="danger-overlay" />}
       {levelUpFlash && <div className="level-up-flash" />}
     </div>
   );

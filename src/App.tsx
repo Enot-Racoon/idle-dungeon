@@ -133,16 +133,16 @@ function App() {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
-                  <span style={{ color: '#fff' }}>🛡️ Герой (Lvl {hero.level})</span>
-                  <span style={{ color: 'var(--color-heal)' }}>+{hero.regen}/s</span>
+                  <span style={{ color: '#fff' }}>🛡️ Герой (Lvl {hero.progression.level})</span>
+                  <span style={{ color: 'var(--color-heal)' }}>+{hero.health.regen}/s</span>
                 </div>
                 <div className="bar-container">
-                  <div className="bar-fill bar-hp" style={{ width: `${(hero.currentHp / hero.maxHp) * 100}%` }} />
-                  <div className="bar-label">{Math.round(hero.currentHp)} / {hero.maxHp} HP</div>
+                  <div className="bar-fill bar-hp" style={{ width: `${(hero.health.currentHp / hero.health.maxHp) * 100}%` }} />
+                  <div className="bar-label">{Math.round(hero.health.currentHp)} / {hero.health.maxHp} HP</div>
                 </div>
                 
                 <div className="bar-container" style={{ height: '6px', marginTop: '6px', borderRadius: '3px' }}>
-                  <div className="bar-fill bar-xp" style={{ width: `${(hero.exp / hero.nextLevelExp) * 100}%` }} />
+                  <div className="bar-fill bar-xp" style={{ width: `${(hero.progression.exp / hero.progression.nextLevelExp) * 100}%` }} />
                 </div>
               </div>
 
@@ -167,14 +167,14 @@ function App() {
                     <div 
                       className={`bar-fill ${monster.isBoss ? 'bar-boss' : 'bar-hp'}`} 
                       style={{ 
-                        width: `${(monster.currentHp / monster.maxHp) * 100}%`,
+                        width: `${(monster.health.currentHp / monster.health.maxHp) * 100}%`,
                         backgroundColor: monster.isBoss ? undefined : '#e11d48'
                       }} 
                     />
-                    <div className="bar-label">{monster.currentHp} / {monster.maxHp} HP</div>
+                    <div className="bar-label">{Math.round(monster.health.currentHp)} / {monster.health.maxHp} HP</div>
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                    Сила: ⚔️ {monster.attack} | Уровень: {monster.level}
+                    Сила: ⚔️ {monster.combat.attack} | Уровень: {monster.level}
                   </div>
                 </div>
               )}

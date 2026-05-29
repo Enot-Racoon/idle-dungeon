@@ -1,4 +1,4 @@
-import type { Artifact, Monster, Skill } from "../types/game";
+import type { Artifact, Skill, MonsterEntity } from "../types/ecs";
 
 export const getSpeedMultiplier = (skills: Skill[]): number => {
   const frenzy = skills.find((s) => s.id === "skl_frenzy");
@@ -14,7 +14,7 @@ export const getGoldMultiplier = (skills: Skill[], artifacts: Artifact[], shards
   return midasMult * artMult * shardsMult;
 };
 
-export const getDamageMultiplier = (artifacts: Artifact[], monster: Monster | null): number => {
+export const getDamageMultiplier = (artifacts: Artifact[], monster: MonsterEntity | null): number => {
   const dmgArt = artifacts.find((a) => a.id === "art_sigil");
   let mult = 1 + (dmgArt ? dmgArt.level * dmgArt.effectValue : 0);
   if (monster?.isBoss) {

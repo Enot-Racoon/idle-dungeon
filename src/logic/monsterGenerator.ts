@@ -1,7 +1,8 @@
 import type { Monster } from "../types/game";
+import type { MonsterEntity } from "../types/ecs";
 import { MONSTER_NAMES } from "../config/gameConfig";
 
-export const generateMonster = (floor: number, isBoss: boolean): Monster => {
+export const generateMonsterEntity = (floor: number, isBoss: boolean): MonsterEntity => {
   let type: Monster["type"] = "goblin";
   if (floor >= 50) type = "dragon";
   else if (floor >= 30) type = "demon";
@@ -24,14 +25,25 @@ export const generateMonster = (floor: number, isBoss: boolean): Monster => {
 
   return {
     id: `monster_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-    name,
-    level: floor,
-    currentHp: maxHp,
-    maxHp,
-    attack,
-    goldReward,
-    essenceReward,
-    isBoss,
     type,
+    name,
+    isBoss,
+    level: floor,
+    health: {
+      currentHp: maxHp,
+      maxHp,
+      regen: 0,
+    },
+    combat: {
+      attack,
+      defense: 0,
+      attackSpeed: 1.5,
+      critChance: 0,
+      critDamage: 1,
+    },
+    reward: {
+      goldReward,
+      essenceReward,
+    },
   };
 };
