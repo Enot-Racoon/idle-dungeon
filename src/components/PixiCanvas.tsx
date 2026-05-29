@@ -29,9 +29,9 @@ export const PixiCanvas: React.FC = () => {
   const [shakeScreen, setShakeScreen] = useState(false);
   const [levelUpFlash, setLevelUpFlash] = useState(false);
 
-  const monster = useGameStore(state => state.monster);
-  const hero = useGameStore(state => state.hero);
-  const combatEvents = useGameStore(state => state.combatEvents);
+  const monster = useGameStore((state) => state.monster);
+  const hero = useGameStore((state) => state.hero);
+  const combatEvents = useGameStore((state) => state.combatEvents);
 
   // Refs for tracking 3D meshes to animate
   const sceneRef = useRef<{
@@ -210,10 +210,7 @@ export const PixiCanvas: React.FC = () => {
   useEffect(() => {
     if (!monster) return;
 
-    if (
-      prevMonsterId.current &&
-      prevMonsterId.current !== monster.id
-    ) {
+    if (prevMonsterId.current && prevMonsterId.current !== monster.id) {
       animStateRef.current.monsterDeathTime = 0;
       animStateRef.current.monsterSpawnTime = 0.6;
 
@@ -393,7 +390,9 @@ export const PixiCanvas: React.FC = () => {
       timeAccumulator += dt;
 
       if (torchL && torchR) {
-        const flicker = Math.sin(timeAccumulator * 8) * 0.4 + Math.cos(timeAccumulator * 15) * 0.2;
+        const flicker =
+          Math.sin(timeAccumulator * 8) * 0.4 +
+          Math.cos(timeAccumulator * 15) * 0.2;
         torchL.intensity = 3.5 + flicker;
         torchR.intensity = 3.5 - flicker;
       }
@@ -484,7 +483,11 @@ export const PixiCanvas: React.FC = () => {
           const parent = hs.parent as Container3D;
           parent.rotationQuaternion.setEulerAngles(-swordRotation * 25, 0, 0);
         }
-        hb.rotationQuaternion.setEulerAngles(0, 0, Math.sin(progress * Math.PI) * 10);
+        hb.rotationQuaternion.setEulerAngles(
+          0,
+          0,
+          Math.sin(progress * Math.PI) * 10,
+        );
       } else {
         hc.position.x = -2;
         if (hs.parent) {
@@ -499,7 +502,11 @@ export const PixiCanvas: React.FC = () => {
         const progress = 1 - animStateRef.current.heroHitTime / 0.3;
         const shiftX = Math.sin(progress * Math.PI) * -0.5;
         hc.position.x = -2 + shiftX;
-        hb.rotationQuaternion.setEulerAngles(0, 0, Math.sin(progress * Math.PI) * 15);
+        hb.rotationQuaternion.setEulerAngles(
+          0,
+          0,
+          Math.sin(progress * Math.PI) * 15,
+        );
       }
 
       if (animStateRef.current.monsterAttackTime > 0) {
@@ -509,9 +516,16 @@ export const PixiCanvas: React.FC = () => {
         const yOffset = Math.sin(progress * Math.PI) * 0.6;
         mc.position.x = 2 + xOffset;
         mc.position.y = yOffset;
-        mb.rotationQuaternion.setEulerAngles(0, 0, -Math.sin(progress * Math.PI) * 20);
+        mb.rotationQuaternion.setEulerAngles(
+          0,
+          0,
+          -Math.sin(progress * Math.PI) * 20,
+        );
       } else {
-        if (animStateRef.current.monsterDeathTime <= 0 && animStateRef.current.monsterSpawnTime <= 0) {
+        if (
+          animStateRef.current.monsterDeathTime <= 0 &&
+          animStateRef.current.monsterSpawnTime <= 0
+        ) {
           mc.position.x = 2;
           mc.position.y = 0;
           mb.rotationQuaternion.setEulerAngles(0, 0, 0);
@@ -526,11 +540,17 @@ export const PixiCanvas: React.FC = () => {
         mb.rotationQuaternion.setEulerAngles(0, (1 - progress) * 360, 0);
       }
 
-      if (animStateRef.current.heroAttackTime <= 0 && animStateRef.current.heroHitTime <= 0) {
+      if (
+        animStateRef.current.heroAttackTime <= 0 &&
+        animStateRef.current.heroHitTime <= 0
+      ) {
         hc.position.y = Math.sin(timeAccumulator * 3.5) * 0.05;
       }
 
-      if (animStateRef.current.monsterAttackTime <= 0 && animStateRef.current.monsterSpawnTime <= 0) {
+      if (
+        animStateRef.current.monsterAttackTime <= 0 &&
+        animStateRef.current.monsterSpawnTime <= 0
+      ) {
         mc.position.y = Math.cos(timeAccumulator * 3) * 0.05;
       }
     });
@@ -593,9 +613,7 @@ export const PixiCanvas: React.FC = () => {
         ))}
       </div>
 
-      {hero.currentHp < hero.maxHp * 0.25 && (
-        <div className="danger-overlay" />
-      )}
+      {hero.currentHp < hero.maxHp * 0.25 && <div className="danger-overlay" />}
 
       {levelUpFlash && <div className="level-up-flash" />}
     </div>
