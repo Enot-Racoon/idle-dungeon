@@ -1,9 +1,5 @@
-import type { GameState } from '../types/game';
-
-interface SkillsPanelProps {
-  gameState: GameState;
-  castSkill: (id: string) => void;
-}
+import React from 'react';
+import { useGameStore } from '../store/useGameStore';
 
 const SKILL_ICONS: Record<string, string> = {
   skl_slash: '🌪️',
@@ -12,8 +8,10 @@ const SKILL_ICONS: Record<string, string> = {
   skl_greed: '🪙'
 };
 
-export const SkillsPanel: React.FC<SkillsPanelProps> = ({ gameState, castSkill }) => {
-  const { skills, hero } = gameState;
+export const SkillsPanel: React.FC = () => {
+  const skills = useGameStore(state => state.skills);
+  const hero = useGameStore(state => state.hero);
+  const castSkill = useGameStore(state => state.castSkill);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', overflowY: 'auto', paddingRight: '4px' }}>
@@ -27,7 +25,6 @@ export const SkillsPanel: React.FC<SkillsPanelProps> = ({ gameState, castSkill }
           const isReady = skill.currentCooldown === 0;
           const isActive = skill.activeDuration > 0;
           
-          // Compute cooldown percentage
           const cdPct = skill.currentCooldown > 0 
             ? (skill.currentCooldown / skill.cooldown) * 100 
             : 0;
@@ -49,7 +46,6 @@ export const SkillsPanel: React.FC<SkillsPanelProps> = ({ gameState, castSkill }
               }}
               id={`skill-card-${skill.id}`}
             >
-              {/* Cooldown Dark Overlay Swipe */}
               {!isLocked && skill.currentCooldown > 0 && (
                 <div 
                   className="bar-cooldown" 
@@ -66,7 +62,6 @@ export const SkillsPanel: React.FC<SkillsPanelProps> = ({ gameState, castSkill }
                 />
               )}
 
-              {/* Skill Content */}
               <div style={{ display: 'flex', gap: '12px', zIndex: 3 }}>
                 <span 
                   style={{ 
@@ -99,7 +94,6 @@ export const SkillsPanel: React.FC<SkillsPanelProps> = ({ gameState, castSkill }
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div style={{ marginTop: '16px', zIndex: 3 }}>
                 {isLocked ? (
                   <div 

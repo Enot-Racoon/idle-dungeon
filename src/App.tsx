@@ -1,4 +1,5 @@
-import { useGameState } from './hooks/useGameState';
+import { useEffect, useRef } from 'react';
+import { useGameStore } from './store/useGameStore';
 import { PixiCanvas } from './components/PixiCanvas';
 import { Tabs } from './components/Tabs';
 import { UpgradePanel } from './components/UpgradePanel';
@@ -7,16 +8,6 @@ import { ArtifactPanel } from './components/ArtifactPanel';
 import { PrestigePanel } from './components/PrestigePanel';
 
 function App() {
-  const {
-    state,
-    castSkill,
-    buyUpgrade,
-    buyArtifact,
-    setActiveTab,
-    setAutoFightBoss,
-    prestige
-  } = useGameState();
-
   const {
     hero,
     monster,
@@ -30,13 +21,30 @@ function App() {
     activeTab,
     combatEvents,
     dps,
-    autoFightBoss
-  } = state;
+    autoFightBoss,
+    tick,
+    setAutoFightBoss,
+    resetSave
+  } = useGameStore();
+
+  // Game Loop
+  const lastTick = useRef<number>(0);
+  
+  useEffect(() => {
+    lastTick.current = Date.now();
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const dt = Math.min(1.0, (now - lastTick.current) / 1000);
+      lastTick.current = now;
+      tick(dt);
+    }, 100);
+    return () => clearInterval(interval);
+  }, [tick]);
 
   // Manual reset of local storage save to start fresh
   const handleResetSave = () => {
     if (window.confirm('Вы действительно хотите полностью сбросить весь игровой процесс? Реликвии и осколки также будут стерты.')) {
-      localStorage.removeItem('idle_dungeon_save_v1');
+      resetSave();
       window.location.reload();
     }
   };
@@ -61,10 +69,8 @@ function App() {
 
   return (
     <div className="app-container" id="idle-dungeon-app">
-      {/* 1. Main 3D View and HUD Section */}
       <section className="view-section" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         
-        {/* Top Header Panel (RPG Brand + Resource Counters) */}
         <header 
           className="glass-panel" 
           style={{ 
@@ -98,11 +104,9 @@ function App() {
           </div>
         </header>
 
-        {/* The 3D Render Canvas + Floaties Viewport */}
         <div style={{ flex: 1, position: 'relative', borderRadius: '12px', overflow: 'hidden' }}>
-          <PixiCanvas gameState={state} />
+          <PixiCanvas />
 
-          {/* Combat HUD Overlay - absolutely positioned over the canvas */}
           <div 
             style={{ 
               position: 'absolute', 
@@ -116,10 +120,8 @@ function App() {
               zIndex: 4
             }}
           >
-            {/* Top Row: Hero and Monster Health Bars */}
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
               
-              {/* Hero Status HUD */}
               <div 
                 className="glass-panel" 
                 style={{ 
@@ -139,13 +141,11 @@ function App() {
                   <div className="bar-label">{Math.round(hero.currentHp)} / {hero.maxHp} HP</div>
                 </div>
                 
-                {/* Exp bar */}
                 <div className="bar-container" style={{ height: '6px', marginTop: '6px', borderRadius: '3px' }}>
                   <div className="bar-fill bar-xp" style={{ width: `${(hero.exp / hero.nextLevelExp) * 100}%` }} />
                 </div>
               </div>
 
-              {/* Monster Status HUD */}
               {monster && (
                 <div 
                   className="glass-panel" 
@@ -180,7 +180,6 @@ function App() {
               )}
             </div>
 
-            {/* Middle Row: Floor Progression Indicator */}
             <div style={{ alignSelf: 'center', textAlign: 'center' }}>
               <div 
                 className="glass-panel" 
@@ -204,7 +203,6 @@ function App() {
               </div>
             </div>
 
-            {/* Bottom Row: Utilities HUD (DPS & Autofight Boss settings) */}
             <div 
               style={{ 
                 position: 'absolute',
@@ -263,29 +261,25 @@ function App() {
 
       </section>
 
-      {/* 2. Control dashboard panel section */}
       <section className="control-section glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
         
-        {/* Navigation tabs switching panel views */}
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} heroLevel={hero.level} />
+        <Tabs />
 
-        {/* Tab pages containers */}
         <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', padding: '4px 0' }}>
           {activeTab === 'upgrades' && (
-            <UpgradePanel gameState={state} buyUpgrade={buyUpgrade} />
+            <UpgradePanel />
           )}
           {activeTab === 'skills' && (
-            <SkillsPanel gameState={state} castSkill={castSkill} />
+            <SkillsPanel />
           )}
           {activeTab === 'artifacts' && (
-            <ArtifactPanel gameState={state} buyArtifact={buyArtifact} />
+            <ArtifactPanel />
           )}
           {activeTab === 'prestige' && (
-            <PrestigePanel gameState={state} prestige={prestige} />
+            <PrestigePanel />
           )}
         </div>
 
-        {/* Bottom Combat Console Logs (Real-time updates) */}
         <div 
           style={{ 
             height: '110px', 
@@ -337,7 +331,6 @@ function App() {
           </div>
         </div>
 
-        {/* Debug settings link */}
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.03)', marginTop: '8px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
           <span>Версия Альфа v1.0.0</span>
           <button 
@@ -348,7 +341,7 @@ function App() {
               color: 'var(--color-danger)', 
               cursor: 'pointer', 
               fontSize: '0.7rem', 
-              textDecoration: 'underline',
+              textDecoration: 'underline', 
               opacity: 0.7 
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}

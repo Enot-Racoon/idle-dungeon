@@ -1,20 +1,17 @@
 import React from 'react';
-import type { GameState } from '../types/game';
+import { useGameStore } from '../store/useGameStore';
 
-interface PrestigePanelProps {
-  gameState: GameState;
-  prestige: () => void;
-}
+export const PrestigePanel: React.FC = () => {
+  const currentFloor = useGameStore(state => state.currentFloor);
+  const shards = useGameStore(state => state.shards);
+  const prestigeCount = useGameStore(state => state.prestigeCount);
+  const prestige = useGameStore(state => state.prestige);
 
-export const PrestigePanel: React.FC<PrestigePanelProps> = ({ gameState, prestige }) => {
-  const { currentFloor, shards, prestigeCount } = gameState;
-
-  // Calculate shards to be gained
   const shardsEarned = Math.max(0, Math.floor(Math.pow(currentFloor, 1.4) / 5));
   const canPrestige = shardsEarned > 0 || currentFloor >= 10;
   
-  const currentStatMultiplier = (shards * 5); // +5% stats per shard
-  const currentGoldMultiplier = (shards * 2); // +2% gold per shard
+  const currentStatMultiplier = (shards * 5);
+  const currentGoldMultiplier = (shards * 2);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%', overflowY: 'auto', paddingRight: '4px' }}>

@@ -1,9 +1,6 @@
-import type { GameState, Upgrade } from '../types/game';
-
-interface UpgradePanelProps {
-  gameState: GameState;
-  buyUpgrade: (id: string) => void;
-}
+import React from 'react';
+import { useGameStore } from '../store/useGameStore';
+import type { Upgrade } from '../types/game';
 
 const UPGRADE_ICONS: Record<string, string> = {
   upg_att: '💪',
@@ -16,12 +13,24 @@ const UPGRADE_ICONS: Record<string, string> = {
   upg_bts: '🥾'
 };
 
-export const UpgradePanel: React.FC<UpgradePanelProps> = ({ gameState, buyUpgrade }) => {
-  const { upgrades, gold } = gameState;
+export const UpgradePanel: React.FC = () => {
+  const upgrades = useGameStore(state => state.upgrades);
+  const gold = useGameStore(state => state.gold);
+  const buyUpgrade = useGameStore(state => state.buyUpgrade);
 
-  // Split upgrades into base stats and equipment
   const statUpgrades = upgrades.filter(u => !['weapon', 'armor', 'boots'].includes(u.type));
   const gearUpgrades = upgrades.filter(u => ['weapon', 'armor', 'boots'].includes(u.type));
+
+  const varColor = (type: string) => {
+    switch(type) {
+      case 'attack':
+      case 'weapon': return 'var(--color-gold)';
+      case 'hp':
+      case 'armor': return '#93c5fd';
+      case 'regen': return 'var(--color-heal)';
+      default: return 'var(--color-shard)';
+    }
+  };
 
   const renderUpgradeCard = (upgrade: Upgrade) => {
     const icon = UPGRADE_ICONS[upgrade.id] || '⚙️';
@@ -69,17 +78,6 @@ export const UpgradePanel: React.FC<UpgradePanelProps> = ({ gameState, buyUpgrad
         </button>
       </div>
     );
-  };
-
-  const varColor = (type: string) => {
-    switch(type) {
-      case 'attack':
-      case 'weapon': return 'var(--color-gold)';
-      case 'hp':
-      case 'armor': return '#93c5fd';
-      case 'regen': return 'var(--color-heal)';
-      default: return 'var(--color-shard)';
-    }
   };
 
   return (

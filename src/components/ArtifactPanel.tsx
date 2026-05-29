@@ -1,9 +1,5 @@
-import type { GameState } from '../types/game';
-
-interface ArtifactPanelProps {
-  gameState: GameState;
-  buyArtifact: (id: string) => void;
-}
+import React from 'react';
+import { useGameStore } from '../store/useGameStore';
 
 const ARTIFACT_ICONS: Record<string, string> = {
   art_sigil: '🔱',
@@ -12,8 +8,10 @@ const ARTIFACT_ICONS: Record<string, string> = {
   art_slayer: '⚔️'
 };
 
-export const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ gameState, buyArtifact }) => {
-  const { artifacts, essence } = gameState;
+export const ArtifactPanel: React.FC = () => {
+  const artifacts = useGameStore(state => state.artifacts);
+  const essence = useGameStore(state => state.essence);
+  const buyArtifact = useGameStore(state => state.buyArtifact);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', overflowY: 'auto', paddingRight: '4px' }}>
@@ -75,7 +73,6 @@ export const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ gameState, buyArti
                 </div>
               </div>
 
-              {/* Bonus description */}
               <div 
                 style={{ 
                   background: 'rgba(0,0,0,0.3)', 

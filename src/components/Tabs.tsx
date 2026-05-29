@@ -1,12 +1,11 @@
 import React from 'react';
+import { useGameStore } from '../store/useGameStore';
 
-interface TabsProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  heroLevel: number;
-}
+export const Tabs: React.FC = () => {
+  const activeTab = useGameStore(state => state.activeTab);
+  const setActiveTab = useGameStore(state => state.setActiveTab);
+  const heroLevel = useGameStore(state => state.hero.level);
 
-export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab, heroLevel }) => {
   const tabs = [
     { id: 'upgrades', label: '⚔️ Улучшения', levelRequired: 1 },
     { id: 'skills', label: '🔮 Заклинания', levelRequired: 1 },
