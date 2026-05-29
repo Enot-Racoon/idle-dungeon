@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useGameStore } from './store/useGameStore';
-import { PixiCanvas } from './components/PixiCanvas';
+import { PixiCanvas } from './components/Pixi/PixiCanvas';
 import { Tabs } from './components/Tabs';
 import { UpgradePanel } from './components/UpgradePanel';
 import { SkillsPanel } from './components/SkillsPanel';
