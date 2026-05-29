@@ -393,8 +393,8 @@ export const PixiCanvas: React.FC = () => {
         const flicker =
           Math.sin(timeAccumulator * 8) * 0.4 +
           Math.cos(timeAccumulator * 15) * 0.2;
-        torchL.intensity = 3.5 + flicker;
-        torchR.intensity = 3.5 - flicker;
+        torchL.intensity = (3.5 + flicker) * 10;
+        torchR.intensity = (3.5 - flicker) * 10;
       }
 
       if (!sceneRef.current) return;
