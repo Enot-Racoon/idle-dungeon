@@ -100,6 +100,7 @@ export const ArtifactPanel: React.FC = () => {
                       color: "#fff",
                       fontSize: "1rem",
                       display: "flex",
+                      alignItems: "flex-start",
                       justifyContent: "space-between",
                     }}
                   >
@@ -109,6 +110,7 @@ export const ArtifactPanel: React.FC = () => {
                       style={{
                         color: "var(--color-essence)",
                         fontSize: "0.85rem",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       Lvl {art.level}
